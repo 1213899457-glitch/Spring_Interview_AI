@@ -53,6 +53,18 @@ st.markdown("""
     .stButton > button { background: #1d1d1f !important; color: #ffffff !important; border: none !important; border-radius: 8px !important; padding: 10px 24px !important; font-weight: 500 !important; }
     .stButton > button:hover { opacity: 0.85 !important; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
+/* 强制侧边栏单选框文字显示为白色 */
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {
+    color: #f5f5f7 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+
+/* 鼠标悬停时的效果，增加一点互动感 */
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {
+    color: #ffffff !important;
+    opacity: 0.8;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -195,3 +207,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
