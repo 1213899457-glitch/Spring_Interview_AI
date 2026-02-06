@@ -11,7 +11,63 @@ from openai import OpenAI
 load_dotenv()
 
 # ============ 配置 ============
-CORRECT_ORDER_ID = "XYSA888"
+import streamlit as st
+
+# 模拟一个简单的充值码数据库（实际运营时可以放在 Secrets 或 数据库中）
+# 比如：用户买一个 9.9 元的码，可以面试 5 次
+RECHARGE_CODES = {
+    "VIP666": 5,   # 充值码：可面试5次
+    "VIP888": 999, # 充值码：无限次
+}
+
+def main():
+    st.set_page_config(page_title="咸鱼上岸记 | 会员中心", layout="wide")
+
+    # 1. 初始化用户的“钱包”（额度）
+    if 'user_credits' not in st.session_state:
+        st.session_state.user_credits = 0  # 初始额度为0
+
+    # 2. 左侧导航栏 - 会员状态显示
+    with st.sidebar:
+        st.title("👤 个人中心")
+        if st.session_state.user_credits > 0:
+            st.success(f"当前会员额度：{st.session_state.user_credits} 次")
+        else:
+            st.warning("⚠️ 账户余额不足")
+            
+        # 充值模块
+        st.divider()
+        st.subheader("💳 会员充值")
+        code = st.text_input("输入充值激活码", type="password")
+        if st.button("立即充值"):
+            if code in RECHARGE_CODES:
+                added = RECHARGE_CODES[code]
+                st.session_state.user_credits += added
+                st.success(f"成功充值 {added} 次面试额度！")
+                st.rerun()
+            else:
+                st.error("无效的充值码，请联系【咸鱼上岸记】主理人")
+
+    # 3. 主界面逻辑拦截
+    if st.session_state.user_credits <= 0:
+        st.title("🎯 欢迎来到咸鱼上岸记")
+        st.info("请在左侧边栏输入充值码激活您的会员权限。")
+        st.image("你的收款码图片链接或展示文字") # 这里可以放你的微信收款码
+        return
+
+    # 4. 正式功能区域（只有额度 > 0 才能看到）
+    tab1, tab2 = st.tabs(["🎤 模拟面试", "📄 AI 简历神笔"])
+    
+    with tab1:
+        st.header("模拟面试模块")
+        if st.button("开始面试（消耗1次额度）"):
+            st.session_state.user_credits -= 1
+            st.write("面试官已就位，请开始回答...")
+            # 这里接你之前的面试逻辑代码
+
+    with tab2:
+        st.header("简历优化模块")
+        # 这里接简历优化的逻辑代码
 
 NAV_ITEMS = [
     ("🏠 个人中心", "home"),
@@ -349,3 +405,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
